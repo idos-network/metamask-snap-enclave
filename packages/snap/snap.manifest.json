@@ -1,0 +1,30 @@
+{
+  "version": "0.0.1",
+  "description": "idOS",
+  "proposedName": "idOS",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/juliosantos/idos-snap.git"
+  },
+  "source": {
+    "shasum": "vpIkYjF3kE4hSGartB4qTDdN2xdBfbbrDtd0FMQJEqc=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "iconPath": "images/icon.svg",
+        "packageName": "idos-snap-span",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "snap_dialog": {},
+    "snap_notify": {},
+    "snap_manageState": {},
+    "endowment:rpc": {
+      "dapps": true,
+      "snaps": false
+    }
+  },
+  "manifestVersion": "0.1"
+}
