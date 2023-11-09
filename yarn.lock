@@ -3480,6 +3480,45 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@idos-network/metamask-snap-enclave@workspace:packages/snap":
+  version: 0.0.0-use.local
+  resolution: "@idos-network/metamask-snap-enclave@workspace:packages/snap"
+  dependencies:
+    "@jest/globals": ^29.5.0
+    "@metamask/auto-changelog": ^3.4.2
+    "@metamask/eslint-config": ^12.0.0
+    "@metamask/eslint-config-jest": ^12.0.0
+    "@metamask/eslint-config-nodejs": ^12.0.0
+    "@metamask/eslint-config-typescript": ^12.0.0
+    "@metamask/snaps-cli": ^3.0.1
+    "@metamask/snaps-jest": ^3.0.0
+    "@metamask/snaps-types": ^3.0.1
+    "@metamask/snaps-ui": ^3.0.1
+    "@stablelib/base64": ^1.0.1
+    "@stablelib/utf8": ^1.0.1
+    "@typescript-eslint/eslint-plugin": ^5.42.1
+    "@typescript-eslint/parser": ^5.42.1
+    buffer: ^6.0.3
+    eslint: ^8.45.0
+    eslint-config-prettier: ^8.5.0
+    eslint-plugin-import: ~2.26.0
+    eslint-plugin-jest: ^27.1.5
+    eslint-plugin-jsdoc: ^41.1.2
+    eslint-plugin-n: ^15.7.0
+    eslint-plugin-prettier: ^4.2.1
+    eslint-plugin-promise: ^6.1.1
+    jest: ^29.5.0
+    prettier: ^2.7.1
+    prettier-plugin-packagejson: ^2.2.11
+    rimraf: ^3.0.2
+    scrypt-js: ^3.0.1
+    through2: ^4.0.2
+    ts-jest: ^29.1.0
+    tweetnacl: ^1.0.3
+    typescript: ^4.7.4
+  languageName: unknown
+  linkType: soft
+
 "@isaacs/cliui@npm:^8.0.2":
   version: 8.0.2
   resolution: "@isaacs/cliui@npm:8.0.2"
@@ -16386,45 +16425,6 @@ __metadata:
   checksum: 7268db63ed5169466540b6fb947aec313200bcf6d40c5ab722c22e242f651994619bcd85601602972d3c85bd2cc45a358a4c61937e9f11a061919a1da569b0c2
   languageName: node
   linkType: hard
-
-"metamask-snap-enclave@workspace:packages/snap":
-  version: 0.0.0-use.local
-  resolution: "metamask-snap-enclave@workspace:packages/snap"
-  dependencies:
-    "@jest/globals": ^29.5.0
-    "@metamask/auto-changelog": ^3.4.2
-    "@metamask/eslint-config": ^12.0.0
-    "@metamask/eslint-config-jest": ^12.0.0
-    "@metamask/eslint-config-nodejs": ^12.0.0
-    "@metamask/eslint-config-typescript": ^12.0.0
-    "@metamask/snaps-cli": ^3.0.1
-    "@metamask/snaps-jest": ^3.0.0
-    "@metamask/snaps-types": ^3.0.1
-    "@metamask/snaps-ui": ^3.0.1
-    "@stablelib/base64": ^1.0.1
-    "@stablelib/utf8": ^1.0.1
-    "@typescript-eslint/eslint-plugin": ^5.42.1
-    "@typescript-eslint/parser": ^5.42.1
-    buffer: ^6.0.3
-    eslint: ^8.45.0
-    eslint-config-prettier: ^8.5.0
-    eslint-plugin-import: ~2.26.0
-    eslint-plugin-jest: ^27.1.5
-    eslint-plugin-jsdoc: ^41.1.2
-    eslint-plugin-n: ^15.7.0
-    eslint-plugin-prettier: ^4.2.1
-    eslint-plugin-promise: ^6.1.1
-    jest: ^29.5.0
-    prettier: ^2.7.1
-    prettier-plugin-packagejson: ^2.2.11
-    rimraf: ^3.0.2
-    scrypt-js: ^3.0.1
-    through2: ^4.0.2
-    ts-jest: ^29.1.0
-    tweetnacl: ^1.0.3
-    typescript: ^4.7.4
-  languageName: unknown
-  linkType: soft
 
 "methods@npm:~1.1.2":
   version: 1.1.2

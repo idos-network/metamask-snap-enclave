@@ -1,5 +1,5 @@
 {
-  "name": "metamask-snap-enclave",
+  "name": "@idos-network/metamask-snap-enclave",
   "version": "0.0.1",
   "description": "idOS Enclave",
   "repository": {

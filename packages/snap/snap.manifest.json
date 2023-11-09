@@ -7,12 +7,12 @@
     "url": "https://github.com:idos-network/metamask-snap-enclave.git"
   },
   "source": {
-    "shasum": "7tMdK3vbi+5BQrQeKWFXMdcUYdpXwouGd0/tXrjO3+o=",
+    "shasum": "nGTE+Sskb3uQJFuDvf4S1/a1syczUGHshzwMe7WzDW4=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
         "iconPath": "images/icon.svg",
-        "packageName": "metamask-snap-enclave",
+        "packageName": "@idos-network/metamask-snap-enclave",
         "registry": "https://registry.npmjs.org/"
       }
     }
