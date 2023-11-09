@@ -1,10 +1,10 @@
 {
-  "name": "idos-snap-span",
+  "name": "metamask-snap-enclave",
   "version": "0.0.1",
-  "description": "",
+  "description": "idOS Enclave",
   "repository": {
     "type": "git",
-    "url": "https://github.com/juliosantos/idos-snap.git"
+    "url": "https://github.com:idos-network/metamask-snap-enclave.git"
   },
   "license": "MIT",
   "main": "./dist/bundle.js",

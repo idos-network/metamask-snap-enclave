@@ -1,18 +1,18 @@
 {
   "version": "0.0.1",
-  "description": "idOS",
-  "proposedName": "idOS",
+  "description": "idOS Enclave",
+  "proposedName": "idOS Enclave",
   "repository": {
     "type": "git",
-    "url": "https://github.com/juliosantos/idos-snap.git"
+    "url": "https://github.com:idos-network/metamask-snap-enclave.git"
   },
   "source": {
-    "shasum": "ECE/b0H0+T625/fmRDx3YzMB6+/+acwFHTEBAR4QeCw=",
+    "shasum": "7tMdK3vbi+5BQrQeKWFXMdcUYdpXwouGd0/tXrjO3+o=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
         "iconPath": "images/icon.svg",
-        "packageName": "idos-snap-span",
+        "packageName": "metamask-snap-enclave",
         "registry": "https://registry.npmjs.org/"
       }
     }
