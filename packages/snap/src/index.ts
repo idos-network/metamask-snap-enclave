@@ -17,8 +17,8 @@ const getState = async () => await snap.request({
   params: { operation: "get" },
 }) || {};
 
-const setState = async (newState = {}, { clear = false } = {}) => {
-  const oldState = clear ? {} : await getState();
+const addToState = async (newState = {}) => {
+  const oldState = await getState();
 
   return snap.request({
     method: "snap_manageState",
@@ -29,29 +29,49 @@ const setState = async (newState = {}, { clear = false } = {}) => {
   });
 };
 
-const snapPrompt = async ({ origin = "unknown" }) => {
-  return snap.request({
-    method: "snap_dialog",
-    params: {
-      type: "prompt",
-      content: panel([
-        ...panelHeader(origin),
-        text(`Please enter your idOS password`),
-        text(`It will take a few seconds to digest.`),
-      ]),
-      placeholder: "idOS password",
-    },
-  })
+const clearState = async () => await snap.request({
+  method: 'snap_manageState',
+  params: { operation: 'clear' },
+});
+
+const storage = async (payload = {}) => {
+  const toStore = Object.entries(payload).reduce((res, [k, v]) => (
+      !!v ? Object.assign(res, {[k]: v}) : res
+    ), {})
+  await addToState(toStore);
+
+  let { humanId, signerAddress, signerPublicKey, keyPair } = await getState();
+
+  const encryptionPublicKey = keyPair?.publicKey;
+
+  return { storage: {
+    humanId,
+    signerAddress,
+    signerPublicKey,
+    encryptionPublicKey,
+  }};
 };
 
-const init = async ({ humanId }, origin) => {
-  let { keyPair } = await getState();
+const init = async (requestParams, origin) => {
+  let { keyPair, humanId } = await getState();
+  let publicKey;
 
-  let { publicKey } = keyPair;
-  publicKey &&= Uint8Array.from(Object.values(keyPair.publicKey));
+  if (keyPair) {
+    publicKey = Uint8Array.from(Object.values(keyPair.publicKey));
+  } else {
+    const password = await snap.request({
+      method: "snap_dialog",
+      params: {
+        type: "prompt",
+        content: panel([
+          ...panelHeader(origin),
+          text(`Please enter your idOS password`),
+          text(`It will take a few seconds to digest.`),
+        ]),
+        placeholder: "idOS password",
+      },
+    });
 
-  if (!keyPair) {
-    const password = await snapPrompt({ origin });
     const secretKey = await scrypt.scrypt(
       Utf8Codec.encode(password.normalize("NFKC")),
       Utf8Codec.encode(humanId),
@@ -60,7 +80,7 @@ const init = async ({ humanId }, origin) => {
 
     keyPair = nacl.box.keyPair.fromSecretKey(secretKey);
 
-    void await setState({ humanId, keyPair });
+    await addToState({ keyPair });
 
     publicKey = keyPair.publicKey;
   }
@@ -84,60 +104,105 @@ const encrypt = async ({ message, receiverPublicKey }) => {
 
   const nonce = nacl.randomBytes(nacl.box.nonceLength);
   const encrypted = nacl.box(message, nonce, receiverPublicKey, secretKey);
+  if (!encrypted) throw new Error("encrypt: encryption failed");
+
   const fullMessage = new Uint8Array(nonce.length + encrypted.length);
   fullMessage.set(nonce, 0);
   fullMessage.set(encrypted, nonce.length);
-
-  if (!encrypted) throw new Error("encrypt: encryption failed");
 
   return { encrypted: Base64Codec.encode(fullMessage) };
 };
 
 const decrypt = async ({ message: fullMessage, senderPublicKey }) => {
   if (!fullMessage) throw new Error("decrypt: no message");
-  fullMessage = Base64Codec.decode(fullMessage);
+  fullMessage = Uint8Array.from(Object.values(fullMessage))
 
   const { keyPair } = await getState();
-  if (!keyPair) throw new error("decrypt: no keypair");
+  if (!keyPair) throw new Error("decrypt: no keypair");
 
   let { publicKey, secretKey } = keyPair;
   publicKey = Uint8Array.from(Object.values(publicKey))
   secretKey = Uint8Array.from(Object.values(secretKey))
 
-  senderPublicKey &&= Base64Codec.decode(senderPublicKey);
+  senderPublicKey &&= Uint8Array.from(Object.values(senderPublicKey));
   senderPublicKey ||= publicKey;
 
   const nonce = fullMessage.slice(0, nacl.box.nonceLength);
   const message = fullMessage.slice(nacl.box.nonceLength, fullMessage.length);
-  const decrypted = nacl.box.open(message, nonce, publicKey, secretKey);
-
+  const decrypted = nacl.box.open(message, nonce, senderPublicKey, secretKey);
   if (!decrypted) throw new Error("decrypt: decryption failed");
 
-  return { decrypted: Utf8Codec.decode(decrypted) };
+  return { decrypted };
+};
+
+const reset = async () => await clearState();
+
+const confirm = async({ message }, origin) => {
+  const confirmed = snap.request({
+    method: "snap_dialog",
+    params: {
+      type: "confirmation",
+      content: panel([
+        ...panelHeader(origin),
+        text("**This dapp is asking you:**"),
+        text(`_${message}_`),
+      ]),
+    },
+  });
+
+  return { confirmed };
 };
 
 export const onRpcRequest: OnRpcRequestHandler = async ({ origin, request }) => {
-  switch (request.method) {
-    case "init":
-      if (!request.params.humanId) return { error: "no human ID" };
+  console.group(`onRpcRequest: ${request.method}`);
+  console.log({ origin });
+  console.log({ params: request.params });
 
+  switch (request.method) {
+    case "storage":
+      return storage(request.params)
+        .then(result => (console.log({ result }), result))
+        .then(({ storage }) => JSON.stringify(storage))
+        .catch(console.warn)
+        .finally(console.groupEnd);
+
+    case "init":
       return init(request.params, origin)
+        .then(result => (console.log({ result }), result))
         .then(({ publicKey }) => publicKey)
-        .catch(console.warn);
+        .catch(console.warn)
+        .finally(console.groupEnd);
 
     case "encrypt":
       if (!request.params.message) return { error: "no message" };
 
       return encrypt(request.params)
+        .then(result => (console.log({ result }), result))
         .then(({ encrypted }) => encrypted)
-        .catch(console.warn);
+        .catch(console.warn)
+        .finally(console.groupEnd);
 
     case "decrypt":
       if (!request.params.message) return { error: "no message" };
 
       return decrypt(request.params)
+        .then(result => (console.log({ result }), result))
         .then(({ decrypted }) => decrypted)
-        .catch(console.warn);
+        .catch(console.warn)
+        .finally(console.groupEnd);
+
+    case "reset":
+      return reset()
+        .then(result => (console.log({ result }), result))
+        .catch(console.warn)
+        .finally(console.groupEnd);
+
+    case "confirm":
+      return confirm(request.params, origin)
+        .then(result => (console.log({ result}), result))
+        .then(({ confirmed }) => confirmed)
+        .catch(console.warn)
+        .finally(console.groupEnd);
 
     default:
       throw new Error("Unexpected request.");
